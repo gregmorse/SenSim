@@ -1,0 +1,2 @@
+brown dog,red fox,hello world,this is a sentence,my friend john,128 sdram,picachu,goofy:[red fox, 0.618403717220521];[goofy, 0.463592415349181];[my friend john, 0.43875354274917];[picachu, 0.368450810925909];[hello world, 0.272646271951589]
+brown dog,red foxes,hello world,this is a sentence,my friend john,128 sdram,picachu,goofy:[red foxes, 0.612159285237161];[goofy, 0.463592415349181];[my friend john, 0.43875354274917];[picachu, 0.368450810925909];[hello world, 0.272646271951589]

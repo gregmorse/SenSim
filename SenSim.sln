@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenSim", "SenSim\SenSim.csproj", "{20B0B05D-E6C4-4494-B0A9-BCA7CBB8FE32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSenSim", "TestSenSim\TestSenSim.csproj", "{C1D25662-8635-4510-8163-A1B91B6614F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemSimWebService", "SemSimWebService\SemSimWebService.csproj", "{2187C27C-C2A4-4532-8193-309880E929F2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20B0B05D-E6C4-4494-B0A9-BCA7CBB8FE32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20B0B05D-E6C4-4494-B0A9-BCA7CBB8FE32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20B0B05D-E6C4-4494-B0A9-BCA7CBB8FE32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20B0B05D-E6C4-4494-B0A9-BCA7CBB8FE32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1D25662-8635-4510-8163-A1B91B6614F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1D25662-8635-4510-8163-A1B91B6614F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1D25662-8635-4510-8163-A1B91B6614F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1D25662-8635-4510-8163-A1B91B6614F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2187C27C-C2A4-4532-8193-309880E929F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2187C27C-C2A4-4532-8193-309880E929F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2187C27C-C2A4-4532-8193-309880E929F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2187C27C-C2A4-4532-8193-309880E929F2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
