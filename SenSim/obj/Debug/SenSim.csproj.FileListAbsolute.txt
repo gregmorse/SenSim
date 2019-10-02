@@ -1,0 +1,6 @@
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SenSim\bin\Debug\SenSim.pdb
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SenSim\obj\Debug\SenSim.pdb
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SenSim\bin\Debug\SenSim.dll.config
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SenSim\bin\Debug\SenSim.dll
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SenSim\obj\Debug\SenSim.dll
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SenSim\obj\Debug\SenSim.csprojResolveAssemblyReference.cache
