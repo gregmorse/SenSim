@@ -3,19 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.IO;
+using System.Web.Hosting;
 
 namespace SemSimWebService
 {
     public class PersistentCache
     {
-        private static string cacheFile = HttpContext.Current.Server.MapPath(@"..\..\..\cacheFile.txt");
+        private static string cacheFile = HostingEnvironment.MapPath("~\\cacheFile.txt");
 
         private static Dictionary<string, Tuple<string, string, double>[]> cache;
 
         public static void put(string key, Tuple<string, string, double>[] value)
         {
             // place object into memory cache
-            cache.Add(key, value);
+            if (!cache.ContainsKey(key))
+            {
+                cache.Add(key, value);
+            }
+            else
+            {
+                cache[key] = value;
+            }
 
             // update persistent cache
             //if (!File.Exists(cacheFile))
@@ -58,7 +66,15 @@ namespace SemSimWebService
                                 double compValue = Double.Parse(compValueStr);
                                 values.Add(new Tuple<string, string, double>(item1, item2, compValue));
                             }
-                            cache.Add(parts[0], values.ToArray());
+
+                            if (!cache.ContainsKey(parts[0]))
+                            {
+                                cache.Add(parts[0], values.ToArray());
+                            }
+                            else
+                            {
+                                cache[parts[0]] = values.ToArray();
+                            }
                         }
                     }
                 }

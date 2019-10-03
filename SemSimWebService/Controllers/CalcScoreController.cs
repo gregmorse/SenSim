@@ -1,4 +1,5 @@
-﻿using SemSimWebService.Models;
+﻿using SemSimWebService.Helpers;
+using SemSimWebService.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,50 +14,11 @@ namespace SemSimWebService.Controllers
     public class CalcScoreController : ApiController
     {
         private static int RESULTCOUNT = 5;
-        private PGPI pgpi;
 
         [Route("api/CalcScore/short/{id}")]
         public IEnumerable<PGPIResponse> Get(string id)
         {
-            Tuple<string, string, double>[] cacheValue = PersistentCache.get(id);
-
-            if (cacheValue != null)
-            {
-                return ConvertTupleToList(cacheValue);
-            }
-
-            if (pgpi == null)
-                pgpi = new PGPI();
-
-            string[] allPGPI = pgpi.getAllPGPIShortDesc();            
-
-            List<KeyValuePair<string, double>> topN = getTopN(SenSim.SemanticSimilarity.CalcSimilarity(id, pgpi.getEmbeddings(), SenSim.DistanceMetric.Cosine), RESULTCOUNT).ToList();
-            cacheValue = new Tuple<string, string, double>[topN.Count];
-            for(int i = 0; i < cacheValue.Length; i++)
-            {
-                string prod = pgpi.getPGPIShortDesc(topN[i].Key);
-                cacheValue[i] = new Tuple<string, string, double>(prod, topN[i].Key, topN[i].Value);
-            }
-            PersistentCache.put(id, cacheValue);
-
-            return ConvertTupleToList(cacheValue);
-        }
-        
-        private List<PGPIResponse> ConvertTupleToList(Tuple<string, string, double>[] _toConvert)
-        {
-            List<PGPIResponse> ret = new List<PGPIResponse>();
-
-            _toConvert.ToList().ForEach(s =>
-            {
-                ret.Add(new PGPIResponse
-                {
-                    Description = s.Item2,
-                    TransactionTypeCode = s.Item1,
-                    PercentMatch = s.Item3
-                });
-            });
-
-            return ret;
+            return SenSimHelper.GetPGPIResponses(id);
         }
 
         [Route("api/CalcScore/{id}/{candidates}")]

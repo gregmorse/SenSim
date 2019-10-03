@@ -154,3 +154,7 @@ C:\Users\Brandon.Joplin\Documents\GitHub\SenSim\SemSimWebService\obj\Debug\SemSi
 C:\Users\Brandon.Joplin\Documents\GitHub\SenSim\SemSimWebService\bin\System.Web.Cors.dll
 C:\Users\Brandon.Joplin\Documents\GitHub\SenSim\SemSimWebService\bin\System.Web.Http.Cors.dll
 C:\Users\Brandon.Joplin\Documents\GitHub\SenSim\SemSimWebService\bin\System.Web.Http.Cors.xml
+C:\Users\Brandon.Joplin\Documents\GitHub\SenSim\SemSimWebService\bin\CsvHelper.dll
+C:\Users\Brandon.Joplin\Documents\GitHub\SenSim\SemSimWebService\bin\System.ValueTuple.dll
+C:\Users\Brandon.Joplin\Documents\GitHub\SenSim\SemSimWebService\bin\CsvHelper.xml
+C:\Users\Brandon.Joplin\Documents\GitHub\SenSim\SemSimWebService\bin\System.ValueTuple.xml
