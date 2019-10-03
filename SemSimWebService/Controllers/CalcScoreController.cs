@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SemSimWebService.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -13,11 +14,14 @@ namespace SemSimWebService.Controllers
         private PGPI pgpi;
 
         [Route("api/CalcScore/short/{id}")]
-        public Tuple<string, string, double>[] Get(string id)
+        public IEnumerable<PGPIResponse> Get(string id)
         {
-            Tuple<string, string, double>[] ret = PersistentCache.get(id);
-            if (ret != null)
-                return ret;
+            Tuple<string, string, double>[] cacheValue = PersistentCache.get(id);
+
+            if (cacheValue != null)
+            {
+                return ConvertTupleToList(cacheValue);
+            }
 
             if (pgpi == null)
                 pgpi = new PGPI();
@@ -25,31 +29,33 @@ namespace SemSimWebService.Controllers
             string[] allPGPI = pgpi.getAllPGPIShortDesc();            
 
             List<KeyValuePair<string, double>> topN = getTopN(SenSim.SemanticSimilarity.CalcSimilarity(id, pgpi.getEmbeddings(), SenSim.DistanceMetric.Cosine), RESULTCOUNT).ToList();
-            ret = new Tuple<string, string, double>[topN.Count];
-            for(int i = 0; i < ret.Length; i++)
+            cacheValue = new Tuple<string, string, double>[topN.Count];
+            for(int i = 0; i < cacheValue.Length; i++)
             {
                 string prod = pgpi.getPGPIShortDesc(topN[i].Key);
-                ret[i] = new Tuple<string, string, double>(prod, topN[i].Key, topN[i].Value);
+                cacheValue[i] = new Tuple<string, string, double>(prod, topN[i].Key, topN[i].Value);
             }
-            PersistentCache.put(id, ret);
-            return ret;
-        }
-        /*
-        public Dictionary<string, double> Get(string id)
-        {            
-            Dictionary<string, double> ret = PersistentCache.get(id);
-            if (ret != null)
-                return ret;
+            PersistentCache.put(id, cacheValue);
 
-            string[] allinput = id.Split(',');
-            string[] allCandidates = new string[allinput.Length - 1];
-            for (int i = 0; i < allCandidates.Length; i++)
-                allCandidates[i] = allinput[i + 1];
-            ret = getTopN(SenSim.SemanticSimilarity.CalcSimilarity(allinput[0], allCandidates, SenSim.SimilarityModel.USETrans, SenSim.DistanceMetric.Cosine), RESULTCOUNT);
-            PersistentCache.put(id, ret);
+            return ConvertTupleToList(cacheValue);
+        }
+        
+        private List<PGPIResponse> ConvertTupleToList(Tuple<string, string, double>[] _toConvert)
+        {
+            List<PGPIResponse> ret = new List<PGPIResponse>();
+
+            _toConvert.ToList().ForEach(s =>
+            {
+                ret.Add(new PGPIResponse
+                {
+                    Description = s.Item2,
+                    TransactionTypeCode = s.Item1,
+                    PercentMatch = s.Item3
+                });
+            });
+
             return ret;
         }
-        */
 
         [Route("api/CalcScore/{id}/{candidates}")]
         public Dictionary<string, double> Get(string id, string candidates)
