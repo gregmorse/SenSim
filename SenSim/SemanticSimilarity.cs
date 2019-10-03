@@ -140,9 +140,42 @@ namespace SenSim
             return results;
         }
 
+        public static List<double[]> getEmbeddings(List<string> targets)
+        {
+            string uri = baseURL + @"/callUSETrans?data=""" + targets[0];
+            for (int i = 1; i < targets.Count; i++)
+            {
+                uri += "," + targets[i];
+            }
+            uri += "\"";
+
+            string requestResult = GetRequest(uri);
+
+            // parse the string to get a list of embeddings
+            List<double[]> embeddingValues = new List<double[]>();
+            string[] embeddings = requestResult.Split('[');
+            for (int i = 2; i < embeddings.Length; i++) // indexes 0 and 1 will be blank
+            {
+                embeddings[i] = embeddings[i].Replace("]", "");
+                embeddings[i] = embeddings[i].Replace("\n", "");
+                string[] values = embeddings[i].Split(' ');
+                List<double> valuesD = new List<double>();
+                for (int j = 0; j < values.Length; j++)
+                {
+                    if (values[j] != "")
+                        valuesD.Add(Double.Parse(values[j]));
+                }
+
+                embeddingValues.Add(valuesD.ToArray());
+            }
+
+            return embeddingValues;
+        }
+
         private static string GetRequest(string uri)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            request.Timeout = 300000;
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
@@ -213,6 +246,73 @@ namespace SenSim
             }
 
             return result;
+        }
+
+        public static Dictionary<string, double> CalcSimilarity(string target, Dictionary<string, double[]> embs, DistanceMetric metric = DistanceMetric.Euclidean)
+        {
+            Dictionary<string, double> results = new Dictionary<string, double>();
+
+            string uri;
+
+            uri = baseURL + @"/callUSETrans?data=""" + target + "\"";
+
+            string requestResult = GetRequest(uri);
+
+            // parse the string to get a list of embeddings
+            double[] embeddingValues = null;
+            string[] embeddings = requestResult.Split('[');
+            for (int i = 2; i < embeddings.Length; i++) // indexes 0 and 1 will be blank
+            {
+                embeddings[i] = embeddings[i].Replace("]", "");
+                embeddings[i] = embeddings[i].Replace("\n", "");
+                string[] values = embeddings[i].Split(' ');
+                List<double> valuesD = new List<double>();
+                for (int j = 0; j < values.Length; j++)
+                {
+                    if (values[j] != "")
+                        valuesD.Add(Double.Parse(values[j]));
+                }
+
+                embeddingValues = valuesD.ToArray();
+            }
+
+            List<KeyValuePair<string, double[]>> embList = embs.ToList();
+            for (int i = 0; i < embList.Count; i++)
+            {
+                double score = 0;
+
+                switch (metric)
+                {
+                    case DistanceMetric.Euclidean:
+                        for (int j = 0; j < embList[i].Value.Length; j++)
+                        {
+                            score += (embList[i].Value[j] - embeddingValues[j]) * (embList[i].Value[j] - embeddingValues[j]);
+                        }
+                        score = Math.Sqrt(score);
+                        results.Add(embList[i].Key, 1 - score);
+                        break;
+
+                    case DistanceMetric.Cosine:
+                        // Cosine similarity
+                        double dotProduct = 0;
+                        double targetMagnitude = 0;
+                        double candidateMagnitude = 0;
+                        for (int j = 0; j < embList[i].Value.Length; j++)
+                        {
+                            dotProduct += embList[i].Value[j] * embeddingValues[j];
+                            targetMagnitude += embeddingValues[j] * embeddingValues[j];
+                            candidateMagnitude += embList[i].Value[j] * embList[i].Value[j];
+                        }
+
+                        targetMagnitude = Math.Sqrt(targetMagnitude);
+                        candidateMagnitude = Math.Sqrt(candidateMagnitude);
+                        score = dotProduct / (targetMagnitude * candidateMagnitude);
+                        results.Add(embList[i].Key, score);
+                        break;
+                }
+            }
+
+            return results;
         }
     }    
 }

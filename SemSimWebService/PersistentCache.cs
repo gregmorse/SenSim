@@ -10,9 +10,9 @@ namespace SemSimWebService
     {
         private static string cacheFile = HttpContext.Current.Server.MapPath(@"..\..\..\cacheFile.txt");
 
-        private static Dictionary<string, Dictionary<string, double>> cache;
+        private static Dictionary<string, Tuple<string, string, double>[]> cache;
 
-        public static void put(string key, Dictionary<string, double> value)
+        public static void put(string key, Tuple<string, string, double>[] value)
         {
             // place object into memory cache
             cache.Add(key, value);
@@ -21,16 +21,22 @@ namespace SemSimWebService
             //if (!File.Exists(cacheFile))
             //    File.Create(cacheFile, );
             
-            string dictString = string.Join(";", value);            
-            File.AppendAllText(cacheFile, key + ":" + dictString + Environment.NewLine);
+            string valueString = "";      
+            for(int i = 0; i < value.Length; i++)
+            {
+                valueString += value[i].Item1 + ',' + value[i].Item2 + ',' + value[i].Item3;
+                if (i < value.Length - 1)
+                    valueString += ';';
+            }
+            File.AppendAllText(cacheFile, key + ":" + valueString + Environment.NewLine);
         }
 
-        public static Dictionary<string, double> get(string key)
+        public static Tuple<string, string, double>[] get(string key)
         {
             // if cache is empty, check cachefile and load into memory cache
             if(cache == null)
             {
-                cache = new Dictionary<string, Dictionary<string, double>>();
+                cache = new Dictionary<string, Tuple<string, string, double>[]>();
 
                 if(File.Exists(cacheFile))
                 {
@@ -40,19 +46,19 @@ namespace SemSimWebService
                         while ((line = file.ReadLine()) != null)
                         {
                             string[] parts = line.Split(':');
-                            Dictionary<string, double> dict = new Dictionary<string, double>();
+                            List<Tuple<string, string, double>> values = new List<Tuple<string, string, double>>();
 
                             string[] entries = parts[1].Split(';');
                             for(int i = 0; i < entries.Length; i++)
                             {
                                 string[] components = entries[i].Split(',');
-                                string compKey = components[0].Remove(0, 1);
-                                string compValueStr = components[1].Remove(0, 1);
-                                compValueStr = compValueStr.Remove(compValueStr.Length - 1);
+                                string item1 = components[0];
+                                string item2 = components[1];
+                                string compValueStr = components[2];                                
                                 double compValue = Double.Parse(compValueStr);
-                                dict.Add(compKey, compValue);
+                                values.Add(new Tuple<string, string, double>(item1, item2, compValue));
                             }
-                            cache.Add(parts[0], dict);
+                            cache.Add(parts[0], values.ToArray());
                         }
                     }
                 }

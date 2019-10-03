@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.IO;
 
 namespace TestSenSim
 {
@@ -11,8 +12,54 @@ namespace TestSenSim
     {
         static void Main(string[] args)
         {
-            simpleTest();
+            processPGPI();
+            //simpleTest();
             //speedTest();
+        }
+
+        static void processPGPI()
+        {
+            List<string> targets = new List<string>();
+            List<string> pg = new List<string>();
+            List<string> pi = new List<string>();
+            int charCounter = 0;
+
+            using (StreamReader file = new StreamReader("Active PGPI.csv"))
+            {
+                string line;
+                for(int i = 0; i < 789; i++)
+                    file.ReadLine(); // get past column header
+                while ((line = file.ReadLine()) != null)
+                {
+                    string[] columns = line.Split(',');
+                    pg.Add(columns[0]);
+                    pi.Add(columns[1]);
+                    string desc = columns[2].TrimEnd(' ');
+                    desc = desc.Replace('&', ' ');
+                    desc = desc.Replace('\'', ' ');
+                    desc = desc.Replace('\"', ' ');
+                    desc = desc.Replace(';', ' ');
+                    targets.Add(desc);
+                    charCounter += desc.Length + 1;
+                    if(charCounter > 2000)
+                    {
+                        // get the embeddings
+                        List<double[]> embeddings = SenSim.SemanticSimilarity.getEmbeddings(targets);
+
+                        // update new pgpi file
+                        for (int i = 0; i < targets.Count; i++)
+                        {
+                            File.AppendAllText("pgpiEmbeddings.csv", pg[i] + "," + pi[i] + "," + targets[i] + "," + string.Join(",", embeddings[i]) + Environment.NewLine);
+                        }
+
+                        // reset
+                        targets = new List<string>();
+                        pg = new List<string>();
+                        pi = new List<string>();
+                        charCounter = 0;
+                    }
+                }
+            }
         }
 
         static void simpleTest()

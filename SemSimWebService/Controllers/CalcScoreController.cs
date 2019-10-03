@@ -10,7 +10,31 @@ namespace SemSimWebService.Controllers
     public class CalcScoreController : ApiController
     {
         private static int RESULTCOUNT = 5;
+        private PGPI pgpi;
 
+        [Route("api/CalcScore/short/{id}")]
+        public Tuple<string, string, double>[] Get(string id)
+        {
+            Tuple<string, string, double>[] ret = PersistentCache.get(id);
+            if (ret != null)
+                return ret;
+
+            if (pgpi == null)
+                pgpi = new PGPI();
+
+            string[] allPGPI = pgpi.getAllPGPIShortDesc();            
+
+            List<KeyValuePair<string, double>> topN = getTopN(SenSim.SemanticSimilarity.CalcSimilarity(id, pgpi.getEmbeddings(), SenSim.DistanceMetric.Cosine), RESULTCOUNT).ToList();
+            ret = new Tuple<string, string, double>[topN.Count];
+            for(int i = 0; i < ret.Length; i++)
+            {
+                string prod = pgpi.getPGPIShortDesc(topN[i].Key);
+                ret[i] = new Tuple<string, string, double>(prod, topN[i].Key, topN[i].Value);
+            }
+            PersistentCache.put(id, ret);
+            return ret;
+        }
+        /*
         public Dictionary<string, double> Get(string id)
         {            
             Dictionary<string, double> ret = PersistentCache.get(id);
@@ -25,18 +49,17 @@ namespace SemSimWebService.Controllers
             PersistentCache.put(id, ret);
             return ret;
         }
+        */
 
         [Route("api/CalcScore/{id}/{candidates}")]
         public Dictionary<string, double> Get(string id, string candidates)
         {
-            Dictionary<string, double> ret = PersistentCache.get(id + "," + candidates);
-            if (ret != null)
-                return ret;
+            Dictionary<string, double> ret;
 
             string[] candidateValues = candidates.Split(',');
 
             ret = getTopN(SenSim.SemanticSimilarity.CalcSimilarity(id, candidateValues, SenSim.SimilarityModel.USETrans, SenSim.DistanceMetric.Cosine), RESULTCOUNT);
-            PersistentCache.put(id + "," + candidates, ret);
+
             return ret;
         }
 
