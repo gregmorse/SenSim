@@ -24,10 +24,34 @@ namespace TestSenSim
             List<string> pi = new List<string>();
             int charCounter = 0;
 
+            Dictionary<string, string> productGroups = new Dictionary<string, string>();
+
+            // read product group file
+            using (StreamReader file = new StreamReader("PG Only.csv"))
+            {
+                string line;
+                for (int i = 0; i < 1; i++)
+                    file.ReadLine(); // get past column header
+                while ((line = file.ReadLine()) != null)
+                {
+                    string[] columns = line.Split(',');
+                    
+                    string desc = columns[1].TrimEnd(' ');
+                    desc = desc.Replace('&', ' ');
+                    desc = desc.Replace('\'', ' ');
+                    desc = desc.Replace('\"', ' ');
+                    desc = desc.Replace(';', ' ');
+                    desc = desc.Replace('+', ' ');
+
+                    if(!productGroups.ContainsKey(columns[0]))
+                        productGroups.Add(columns[0], desc);
+                }
+            }
+
             using (StreamReader file = new StreamReader("Active PGPI.csv"))
             {
                 string line;
-                for(int i = 0; i < 789; i++)
+                for(int i = 0; i < 1; i++)
                     file.ReadLine(); // get past column header
                 while ((line = file.ReadLine()) != null)
                 {
@@ -39,6 +63,13 @@ namespace TestSenSim
                     desc = desc.Replace('\'', ' ');
                     desc = desc.Replace('\"', ' ');
                     desc = desc.Replace(';', ' ');
+                    desc = desc.Replace('+', ' ');
+                    string productDesc = "";
+                    if (productGroups.ContainsKey(columns[0]))
+                    {
+                        productDesc = productGroups[columns[0]];
+                        desc = desc + " " + productDesc;
+                    }
                     targets.Add(desc);
                     charCounter += desc.Length + 1;
                     if(charCounter > 2000)
@@ -49,7 +80,7 @@ namespace TestSenSim
                         // update new pgpi file
                         for (int i = 0; i < targets.Count; i++)
                         {
-                            File.AppendAllText("pgpiEmbeddings.csv", pg[i] + "," + pi[i] + "," + targets[i] + "," + string.Join(",", embeddings[i]) + Environment.NewLine);
+                            File.AppendAllText("pgpiEmbeddingsExt.csv", pg[i] + "," + pi[i] + "," + targets[i] + "," + string.Join(",", embeddings[i]) + Environment.NewLine);
                         }
 
                         // reset

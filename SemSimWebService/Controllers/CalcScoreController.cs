@@ -15,12 +15,29 @@ namespace SemSimWebService.Controllers
     {
         private static int RESULTCOUNT = 5;
 
-        [Route("api/CalcScore/short/{id}")]
-        public IEnumerable<PGPIResponse> Get(string id)
+        [Route("api/CalcScore/{length}/{id}")]
+        public IEnumerable<PGPIResponse> Get(string length, string id)
         {
             return SenSimHelper.GetPGPIResponses(id);
         }
 
+        /*
+        public Dictionary<string, double> Get(string id)
+        {            
+            Dictionary<string, double> ret = PersistentCache.get(id);
+            if (ret != null)
+                return ret;
+
+            string[] allinput = id.Split(',');
+            string[] allCandidates = new string[allinput.Length - 1];
+            for (int i = 0; i < allCandidates.Length; i++)
+                allCandidates[i] = allinput[i + 1];
+            ret = getTopN(SenSim.SemanticSimilarity.CalcSimilarity(allinput[0], allCandidates, SenSim.SimilarityModel.USETrans, SenSim.DistanceMetric.Cosine), RESULTCOUNT);
+            PersistentCache.put(id, ret);
+            return ret;
+        }
+        */
+        /*
         [Route("api/CalcScore/{id}/{candidates}")]
         public Dictionary<string, double> Get(string id, string candidates)
         {
@@ -32,7 +49,7 @@ namespace SemSimWebService.Controllers
 
             return ret;
         }
-
+        */
         private Dictionary<string, double> getTopN(Dictionary<string, double> allResults, int n)
         {
             var resultsList = allResults.ToList();

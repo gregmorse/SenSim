@@ -1,0 +1,5 @@
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SenSim\bin\Release\SenSim.dll.config
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SenSim\bin\Release\SenSim.dll
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SenSim\bin\Release\SenSim.pdb
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SenSim\obj\Release\SenSim.dll
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SenSim\obj\Release\SenSim.pdb

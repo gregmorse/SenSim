@@ -1,0 +1,9 @@
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\TestSenSim\bin\Release\TestSenSim.exe.config
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\TestSenSim\bin\Release\TestSenSim.exe
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\TestSenSim\bin\Release\TestSenSim.pdb
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\TestSenSim\bin\Release\SenSim.dll
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\TestSenSim\bin\Release\SenSim.pdb
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\TestSenSim\bin\Release\SenSim.dll.config
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\TestSenSim\obj\Release\TestSenSim.csprojResolveAssemblyReference.cache
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\TestSenSim\obj\Release\TestSenSim.exe
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\TestSenSim\obj\Release\TestSenSim.pdb
