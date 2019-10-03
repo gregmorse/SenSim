@@ -16,12 +16,15 @@ namespace SemSimWebService.Controllers
         private PGPI pgpi;
 
         [Route("api/CalcScore/{length}/{id}")]
-        public Tuple<string, string, double>[] Get(string length, string id)
+        public IEnumerable<PGPIResponse> Get(string length, string id)
         {
             string cacheID = length.Substring(0, 1).ToLower() + ";" + id;
-            Tuple<string, string, double>[] ret = PersistentCache.get(cacheID);
-            if (ret != null)
-                return ret;
+            Tuple<string, string, double>[] cacheValue = PersistentCache.get(cacheID);
+
+            if (cacheValue != null)
+            {
+                return ConvertTupleToList(cacheValue);
+            }
 
             if (pgpi == null)
                 pgpi = new PGPI();
@@ -34,8 +37,8 @@ namespace SemSimWebService.Controllers
             else
                 throw new ArgumentException();
 
-            ret = new Tuple<string, string, double>[topN.Count];
-            for(int i = 0; i < ret.Length; i++)
+            cacheValue = new Tuple<string, string, double>[topN.Count];
+            for (int i = 0; i < cacheValue.Length; i++)
             {
                 string prod = null;
                 if (length.Equals("short"))
@@ -43,9 +46,27 @@ namespace SemSimWebService.Controllers
                 else if (length.Equals("long"))
                     prod = pgpi.getPGPILongDesc(topN[i].Key);
 
-                ret[i] = new Tuple<string, string, double>(prod, topN[i].Key, topN[i].Value);
+                cacheValue[i] = new Tuple<string, string, double>(prod, topN[i].Key, topN[i].Value);
             }
-            PersistentCache.put(cacheID, ret);
+            PersistentCache.put(cacheID, cacheValue);
+
+            return ConvertTupleToList(cacheValue);
+        }
+
+        private List<PGPIResponse> ConvertTupleToList(Tuple<string, string, double>[] _toConvert)
+        {
+            List<PGPIResponse> ret = new List<PGPIResponse>();
+
+            _toConvert.ToList().ForEach(s =>
+            {
+                ret.Add(new PGPIResponse
+                {
+                    Description = s.Item2,
+                    TransactionTypeCode = s.Item1,
+                    PercentMatch = s.Item3
+                });
+            });
+
             return ret;
         }
 

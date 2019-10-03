@@ -154,3 +154,6 @@ C:\Users\Brandon.Joplin\Documents\GitHub\SenSim\SemSimWebService\obj\Debug\SemSi
 C:\Users\Brandon.Joplin\Documents\GitHub\SenSim\SemSimWebService\bin\System.Web.Cors.dll
 C:\Users\Brandon.Joplin\Documents\GitHub\SenSim\SemSimWebService\bin\System.Web.Http.Cors.dll
 C:\Users\Brandon.Joplin\Documents\GitHub\SenSim\SemSimWebService\bin\System.Web.Http.Cors.xml
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SemSimWebService\bin\System.Web.Cors.dll
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SemSimWebService\bin\System.Web.Http.Cors.dll
+C:\Users\Greg\Desktop\various\work\code games\SenSim\SenSim\SemSimWebService\bin\System.Web.Http.Cors.xml
