@@ -12,28 +12,40 @@ namespace SemSimWebService.Controllers
         private static int RESULTCOUNT = 5;
         private PGPI pgpi;
 
-        [Route("api/CalcScore/short/{id}")]
-        public Tuple<string, string, double>[] Get(string id)
+        [Route("api/CalcScore/{length}/{id}")]
+        public Tuple<string, string, double>[] Get(string length, string id)
         {
-            Tuple<string, string, double>[] ret = PersistentCache.get(id);
+            string cacheID = length.Substring(0, 1).ToLower() + ";" + id;
+            Tuple<string, string, double>[] ret = PersistentCache.get(cacheID);
             if (ret != null)
                 return ret;
 
             if (pgpi == null)
                 pgpi = new PGPI();
 
-            string[] allPGPI = pgpi.getAllPGPIShortDesc();            
+            List<KeyValuePair<string, double>> topN = null;
+            if (length.Equals("short"))
+                topN = getTopN(SenSim.SemanticSimilarity.CalcSimilarity(id, pgpi.getShortEmbeddings(), SenSim.DistanceMetric.Cosine), RESULTCOUNT).ToList();
+            else if (length.Equals("long"))
+                topN = getTopN(SenSim.SemanticSimilarity.CalcSimilarity(id, pgpi.getLongEmbeddings(), SenSim.DistanceMetric.Cosine), RESULTCOUNT).ToList();
+            else
+                throw new ArgumentException();
 
-            List<KeyValuePair<string, double>> topN = getTopN(SenSim.SemanticSimilarity.CalcSimilarity(id, pgpi.getEmbeddings(), SenSim.DistanceMetric.Cosine), RESULTCOUNT).ToList();
             ret = new Tuple<string, string, double>[topN.Count];
             for(int i = 0; i < ret.Length; i++)
             {
-                string prod = pgpi.getPGPIShortDesc(topN[i].Key);
+                string prod = null;
+                if (length.Equals("short"))
+                    prod = pgpi.getPGPIShortDesc(topN[i].Key);
+                else if (length.Equals("long"))
+                    prod = pgpi.getPGPILongDesc(topN[i].Key);
+
                 ret[i] = new Tuple<string, string, double>(prod, topN[i].Key, topN[i].Value);
             }
-            PersistentCache.put(id, ret);
+            PersistentCache.put(cacheID, ret);
             return ret;
         }
+
         /*
         public Dictionary<string, double> Get(string id)
         {            
@@ -50,7 +62,7 @@ namespace SemSimWebService.Controllers
             return ret;
         }
         */
-
+        /*
         [Route("api/CalcScore/{id}/{candidates}")]
         public Dictionary<string, double> Get(string id, string candidates)
         {
@@ -62,7 +74,7 @@ namespace SemSimWebService.Controllers
 
             return ret;
         }
-
+        */
         private Dictionary<string, double> getTopN(Dictionary<string, double> allResults, int n)
         {
             var resultsList = allResults.ToList();

@@ -58,7 +58,8 @@ namespace SemSimWebService
                                 double compValue = Double.Parse(compValueStr);
                                 values.Add(new Tuple<string, string, double>(item1, item2, compValue));
                             }
-                            cache.Add(parts[0], values.ToArray());
+                            if(!cache.ContainsKey(parts[0]))
+                                cache.Add(parts[0], values.ToArray());
                         }
                     }
                 }
